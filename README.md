@@ -1,2 +1,5 @@
-# Team17
-Repository for Data Structures' Final Project
+# Team17 - Data Based
+
+Repository for Data Structures' Final Project called Alexandria ONline
+
+
