@@ -186,6 +186,23 @@ INSERT INTO users VALUES
 (3, 'Jane', 'Austen', 'By the Author of Sense and Sensibilit'),
 (4, 'Francis', 'Fitzgerald', 'F. Scott Fitzgerald');
 
+INSERT INTO authors VALUES
+(1, 'Andy', 'Wier', 'N/A'),
+(2, 'John', 'Tolkien', 'JRR Tolkien'),
+(3, 'Jane', 'Austen', 'By the Author of Sense and Sensibilit'),
+(4, 'Francis', 'Fitzgerald', 'F. Scott Fitzgerald');
+
+INSERT INTO loans VALUES
+(1, 3, 3, '2026-04-06', '2026-04-13', '2026-04-06'),
+(2, 1, 1, '2026-04-07', '2026-04-09', '2026-04-06'),
+(3, 1, 4, '2026-04-06', '2026-04-13', '2026-04-06');
+
+
+INSERT INTO authors_books VALUES
+(1,1,3),
+(2,2,2),
+(3,3,1);
+
 /*------------------------------------------------------
   2. 
   ------------------------------------------------------
