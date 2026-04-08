@@ -13,7 +13,7 @@
 
 CREATE DATABASE IF NOT EXISTS alexandria_online ;	
 
-USE alexandia_online ; 
+USE alexandria_online ; 
 
 
 
