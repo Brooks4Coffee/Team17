@@ -154,9 +154,37 @@ CREATE TABLE authors_genres (
   1. 
   ------------------------------------------------------
   describe step here
-  
+  Not done with data implmentation yet
 --------------------------------------------------------*/
+INSERT INTO Genres VALUES
+(1,'Fantasy','Stories in medievel settings with magic.'),
+(2,'Science Fiction','Books that contain advanced technologies and real science.'),
+(3,'Mystery','Detective stories.'),
+(4,'Horror','Scary and intense stories.'),
+(5,'Romance','Love stories.');
 
+INSERT INTO shelves VALUES
+(1, 'on the second floor and first from the stairs'),
+(2, 'on the first floor and first from the door'),
+(3, 'on the second floor and second from the stairs');
+
+INSERT INTO books VALUES
+(1, 'Lord of the Rings', '1954-07-29', 02611252, 1),
+(2, 'Project Hail Mary', '2021-05-04', 05935229, 2),
+(3, 'Pride and prejudice', '1813-01-28', 84763454, 1),
+(4, 'The Great Gatsby', '1925-04-10', 04321252, 3);
+
+INSERT INTO users VALUES
+(1, 'Sean', 'Meegan', 'sean.meegan@gmail.com', '210-123-4567', '2026-04-07', 3.67),
+(2, 'Aubrey', 'Brooks', 'aubrey.brooks@gmail.com', '210-234-5678', '2026-04-08', 6.21),
+(3, 'Owen', 'Flatmen', 'owen.flatmen@gmail.com', '210-345-6789', '2026-04-06', 0.01),
+(4, 'Isi', 'Ataghauman', 'isi.ataghauman@gmail.com', '210-456-7890', '2026-04-04', 9.99);
+
+INSERT INTO users VALUES
+(1, 'Andy', 'Wier', 'N/A'),
+(2, 'John', 'Tolkien', 'JRR Tolkien'),
+(3, 'Jane', 'Austen', 'By the Author of Sense and Sensibilit'),
+(4, 'Francis', 'Fitzgerald', 'F. Scott Fitzgerald');
 
 /*------------------------------------------------------
   2. 
