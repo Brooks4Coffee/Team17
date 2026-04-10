@@ -142,23 +142,16 @@ CREATE TABLE authors_genres (
     FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 
-
-
-
-
-
-
--- ==================================================================================
---  PART 2: Fill out database									(name)
--- ==================================================================================
+/*
+---- ==================================================================================
+--  PART 1.2: Fill out database									(name)
+-- ==================================================================================*/
 
 /*------------------------------------------------------
   1. 
   ------------------------------------------------------
-  describe step here
-  Not done with data implmentation yet
+  this section fills out each table with 24 or more rows as well as linking the foriegn keys
 --------------------------------------------------------*/
-
 
 INSERT INTO authors VALUES (1,'Andy','Weir','N/A'),(2,'JRR','Tolkien','J.R.R. Tolkien'),(3,'Jane','Austen','N/A'),(4,'F','Scott Fitzgerald','N/A'),(5,'George','Orwell','N/A'),(6,'Harper','Lee','N/A'),(7,'Stephen','King','N/A'),(8,'Agatha','Christie','N/A'),(9,'Isaac','Asimov','N/A'),(10,'Arthur','C Clarke','N/A'),(11,'Frank','Herbert','N/A'),(12,'Neil','Gaiman','N/A'),(13,'Terry','Pratchett','N/A'),(14,'Suzanne','Collins','N/A'),(15,'John','Green','N/A'),(16,'Dan','Brown','N/A'),(17,'Paulo','Coelho','N/A'),(18,'Yann','Martel','N/A'),(19,'Cormac','McCarthy','N/A'),(20,'Gillian','Flynn','N/A'),(21,'Stieg','Larsson','N/A'),(22,'Patrick','Rothfuss','N/A'),(23,'Ernest','Cline','N/A'),(24,'Alex','Michaelides','N/A');
 INSERT INTO genres VALUES (1,'Fantasy','Stories in medievel settings with magic.'),(2,'Science Fiction','Books that contain advanced technologies and real science.'),(3,'Mystery','Detective stories.'),(4,'Horror','Scary and intense stories.'),(5,'Romance','Love stories.'),(6,'Thriller','Fast paced suspense stories'),(7,'Adventure','Exploration and action stories'),(8,'Biography','Stories about real people'),(9,'Historical Fiction','Stories set in historical periods'),(10,'Young Adult','Books aimed at teenage readers'),(11,'Drama','Emotionally driven storytelling'),(12,'Crime','Stories involving criminal investigations'),(13,'Poetry','Collections of poems'),(14,'Philosophy','Books discussing philosophical ideas'),(15,'Self Help','Books about personal improvement'),(16,'Travel','Books about places and journeys'),(17,'Education','Academic or instructional books'),(18,'Technology','Books about computers and tech'),(19,'Politics','Books about political systems'),(20,'Religion','Books about religious beliefs'),(21,'Mythology','Stories of ancient myths'),(22,'Classic Literature','Famous works of literature'),(23,'Satire','Humorous criticism of society'),(24,'Short Stories','Collections of short narratives');
@@ -168,32 +161,30 @@ INSERT INTO users VALUES (1,'Sean','Meegan','sean.meegan@gmail.com','210-123-456
 INSERT INTO books VALUES (1,'The Martian','2011-02-11','9780804139021',1),(2,'Project Hail Mary','2021-05-04','9780593135204',1),(3,'The Hobbit','1937-09-21','9780345339683',2),(4,'The Fellowship of the Ring','1954-07-29','9780261103573',2),(5,'Pride and Prejudice','1813-01-28','9780141439518',3),(6,'Emma','1815-12-23','9780141439587',3),(7,'The Great Gatsby','1925-04-10','9780743273565',4),(8,'Tender Is the Night','1934-04-12','9780684801544',4),(9,'1984','1949-06-08','9780451524935',5),(10,'Animal Farm','1945-08-17','9780451526342',5),(11,'To Kill a Mockingbird','1960-07-11','9780061120084',6),(12,'Go Set a Watchman','2015-07-14','9780062409850',6),(13,'The Shining','1977-01-28','9780307743657',7),(14,'It','1986-09-15','9780450411434',7),(15,'Murder on the Orient Express','1934-01-01','9780062073501',8),(16,'And Then There Were None','1939-11-06','9780062073488',8),(17,'Foundation','1951-05-01','9780553293357',9),(18,'I Robot','1950-12-02','9780553382563',9),(19,'2001 A Space Odyssey','1968-07-01','9780451457998',10),(20,'Rendezvous with Rama','1973-06-01','9780575077331',10),(21,'Dune','1965-08-01','9780441172719',11),(22,'Dune Messiah','1969-10-15','9780441172696',11),(23,'American Gods','2001-06-19','9780062572233',12),(24,'Neverwhere','1996-09-16','9780380789016',12),(25,'Good Omens','1990-05-01','9780060853983',13),(26,'Small Gods','1992-05-01','9780062237378',13),(27,'The Hunger Games','2008-09-14','9780439023528',14),(28,'Catching Fire','2009-09-01','9780439023498',14),(29,'The Fault in Our Stars','2012-01-10','9780525478812',15),(30,'Looking for Alaska','2005-03-03','9780525475064',15),(31,'The Da Vinci Code','2003-04-03','9780307474278',16),(32,'Angels and Demons','2000-05-01','9781416524793',16),(33,'The Alchemist','1988-04-15','9780061122415',17),(34,'Brida','1990-01-01','9780061762703',17),(35,'Life of Pi','2001-09-11','9780156027328',18),(36,'Beatrice and Virgil','2010-02-02','9780385660068',18),(37,'The Road','2006-09-26','9780307387899',19),(38,'No Country for Old Men','2005-07-19','9780307387134',19),(39,'Gone Girl','2012-06-05','9780307588371',20),(40,'Sharp Objects','2006-09-26','9780307341556',20),(41,'The Girl with the Dragon Tattoo','2005-08-01','9780307454546',21),(42,'The Girl Who Played with Fire','2006-05-01','9780307454553',21),(43,'The Name of the Wind','2007-03-27','9780756404741',22),(44,'The Wise Man Fear','2011-03-01','9780756404734',22),(45,'Ready Player One','2011-08-16','9780307887443',23),(46,'Ready Player Two','2020-11-24','9781524761332',23),(47,'The Silent Patient','2019-02-05','9781250301697',24),(48,'The Maidens','2021-06-10','9781250304452',24);
 
 
-INSERT INTO authors_books VALUES (1,1,2),(2,1,5),(3,2,1),(4,3,4),(5,4,5),(6,1,6),(7,2,7),(8,2,8),(9,3,9),(10,3,10),(11,4,11),(12,4,12),(13,5,13),(14,5,14),(15,6,15),(16,6,16),(17,7,17),(18,7,18),(19,8,19),(20,8,20),(21,9,21),(22,9,22),(23,10,23),(24,10,24);
-
-INSERT INTO books_genres VALUES (1,1,1),(2,2,1),(3,3,2),(4,4,5),(5,5,3),(6,6,2),(7,7,1),(8,8,1),(9,9,5),(10,10,5),(11,11,9),(12,12,9),(13,13,6),(14,14,6),(15,15,11),(16,16,11),(17,17,4),(18,18,4),(19,19,3),(20,20,3),(21,21,2),(22,22,2),(23,23,2),(24,24,2);
-
-INSERT INTO authors_genres VALUES (1,2,1),(2,1,2),(3,3,5),(4,4,3),(5,5,6),(6,6,11),(7,7,4),(8,8,3),(9,9,2),(10,10,2),(11,11,1),(12,12,1),(13,13,23),(14,14,10),(15,15,10),(16,16,6),(17,17,14),(18,18,7),(19,19,6),(20,20,6),(21,21,3),(22,22,1),(23,23,2),(24,24,6);
-
-/*------------------------------------------------------
-  2. 
+ /*------------------------------------------------------
+  2.
   ------------------------------------------------------
-  describe step here
+  insert the many to many relationships into a table
+
+	-authors to their corresponding books
+
+	-books to their coresponding genres
+
+	-authors to their coresponding genres
   
---------------------------------------------------------*/
+ */
 
+	
 
-/*------------------------------------------------------
-  3. 
-  ------------------------------------------------------
-  describe step here
---------------------------------------------------------*/
+INSERT INTO authors_books VALUES (1,1,1),(2,1,2),(3,2,3),(4,2,4),(5,3,5),(6,3,6),(7,4,7),(8,4,8),(9,5,9),(10,5,10),(11,6,11),(12,6,12),(13,7,13),(14,7,14),(15,8,15),(16,8,16),(17,9,17),(18,9,18),(19,10,19),(20,10,20),(21,11,21),(22,11,22),(23,12,23),(24,12,24),(25,13,25),(26,13,26),(27,14,27),(28,14,28),(29,15,29),(30,15,30),(31,16,31),(32,16,32),(33,17,33),(34,17,34),(35,18,35),(36,18,36),(37,19,37),(38,19,38),(39,20,39),(40,20,40),(41,21,41),(42,21,42),(43,22,43),(44,22,44),(45,23,45),(46,23,46),(47,24,47),(48,24,48);
 
-
-
+INSERT INTO books_genres VALUES (1,1,2),(2,2,2),(3,3,1),(4,4,1),(5,5,5),(6,6,5),(7,7,22),(8,8,22),(9,9,2),(10,10,23),(11,11,11),(12,12,11),(13,13,4),(14,14,4),(15,15,3),(16,16,3),(17,17,2),(18,18,2),(19,19,2),(20,20,2),(21,21,1),(22,22,1),(23,23,1),(24,24,1),(25,25,23),(26,26,1),(27,27,10),(28,28,10),(29,29,5),(30,30,10),(31,31,6),(32,32,6),(33,33,14),(34,34,14),(35,35,11),(36,36,11),(37,37,11),(38,38,12),(39,39,6),(40,40,6),(41,41,3),(42,42,3),(43,43,1),(44,44,1),(45,45,2),(46,46,2),(47,47,6),(48,48,6);
+	
+INSERT INTO authors_genres VALUES (1,2,1),(2,1,2),(3,3,5),(4,4,3),(5,5,6),(6,6,11),(7,7,4),(8,8,3),(9,9,2),(10,10,2),(11,11,1),(12,12,1),(13,13,23),(14,14,10),(15,15,10),(16,16,6),(17,17,14),(18,18,7),(19,19,6),(20,20,6),(21,21,3),(22,22,1),(23,23,2),(24,24,6);
 
 
 -- ==================================================================================
--- PART 3: 									(name)
+-- PART 2: 	Write Queries to Demonstrate Database Functionality			(name)
 -- ==================================================================================
 
 /*------------------------------------------------------
