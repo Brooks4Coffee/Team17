@@ -237,34 +237,137 @@ FROM loans l
 JOIN books b ON l.book_id = b.book_id
 JOIN users u ON l.user_id = u.user_id
 WHERE l.loan_return_date IS NULL
-AND l.loan_end_date < CURDATE()
+AND l.loan_end_date < CURDATE();
 
 
--- ==================================================================================
--- PART 4: 									(name)
--- ==================================================================================
-
-/*------------------------------------------------------
-  1. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
-
-
-/*------------------------------------------------------
-  2. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS loan_audit_log (
+    log_id          INT PRIMARY KEY AUTO_INCREMENT,
+    event_type      VARCHAR(10),
+    loan_id         INT,
+    user_id         INT,
+    book_id         INT,
+    notes           VARCHAR(255),
+    event_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
 
-/*------------------------------------------------------
-  3. 
-  ------------------------------------------------------
-  describe step here
---------------------------------------------------------*/
+-- ----------------------------------------------------------------------------------
+-- TRIGGER 1 - INSERT
+-- Fires after a new loan is created. Logs the new checkout to loan_audit_log.
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE TRIGGER after_loan_insert
+AFTER INSERT ON loans
+FOR EACH ROW
+BEGIN
+    INSERT INTO loan_audit_log (event_type, loan_id, user_id, book_id, notes)
+    VALUES ('INSERT', NEW.loan_id, NEW.user_id, NEW.book_id,
+            CONCAT('New loan checked out. Due: ', NEW.loan_end_date));
+END$$
+DELIMITER ;
+
+-- Demonstration: insert a loan and check the log
+INSERT INTO loans (loan_id, user_id, book_id, loan_checkout_date, loan_end_date)
+VALUES (31, 1, 2, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY));
+SELECT * FROM loan_audit_log WHERE event_type = 'INSERT';
 
 
+-- ----------------------------------------------------------------------------------
+-- TRIGGER 2 - UPDATE
+-- Fires after a loan's due date is changed. Logs the old and new due date.
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE TRIGGER after_loan_due_date_update
+AFTER UPDATE ON loans
+FOR EACH ROW
+BEGIN
+    IF OLD.loan_end_date <> NEW.loan_end_date THEN
+        INSERT INTO loan_audit_log (event_type, loan_id, user_id, book_id, notes)
+        VALUES ('UPDATE', NEW.loan_id, NEW.user_id, NEW.book_id,
+                CONCAT('Due date changed from ', OLD.loan_end_date, ' to ', NEW.loan_end_date));
+    END IF;
+END$$
+DELIMITER ;
 
+-- Demonstration: extend due date by 14 days and check the log
+UPDATE loans SET loan_end_date = DATE_ADD(loan_end_date, INTERVAL 14 DAY) WHERE loan_id = 31;
+SELECT * FROM loan_audit_log WHERE event_type = 'UPDATE';
+
+
+-- ----------------------------------------------------------------------------------
+-- TRIGGER 3 - DELETE
+-- Fires before a loan is deleted. Archives the record so it is never silently lost.
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE TRIGGER before_loan_delete
+BEFORE DELETE ON loans
+FOR EACH ROW
+BEGIN
+    INSERT INTO loan_audit_log (event_type, loan_id, user_id, book_id, notes)
+    VALUES ('DELETE', OLD.loan_id, OLD.user_id, OLD.book_id,
+            CONCAT('Loan deleted. Originally checked out: ', OLD.loan_checkout_date));
+END$$
+DELIMITER ;
+
+-- Demonstration: delete the loan and confirm it was archived
+DELETE FROM loans WHERE loan_id = 31;
+SELECT * FROM loan_audit_log WHERE loan_id = 31;
+
+
+-- ----------------------------------------------------------------------------------
+-- STORED PROCEDURE: get_overdue_loans_for_user
+-- Given a user_id, returns all overdue loans and how many days overdue each one is.
+-- IN  p_user_id INT - the user to check
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE get_overdue_loans_for_user (IN p_user_id INT)
+BEGIN
+    SELECT
+        CONCAT(u.user_first_name, ' ', u.user_last_name) AS user_full_name,
+        b.book_title,
+        l.loan_end_date,
+        DATEDIFF(CURDATE(), l.loan_end_date) AS days_overdue
+    FROM loans l
+    JOIN users u ON l.user_id = u.user_id
+    JOIN books b ON l.book_id = b.book_id
+    WHERE l.user_id = p_user_id
+      AND l.loan_return_date IS NULL
+      AND l.loan_end_date < CURDATE()
+    ORDER BY days_overdue DESC;
+END$$
+DELIMITER ;
+
+-- Demonstration: check overdue loans for user 25
+CALL get_overdue_loans_for_user(25);
+
+
+-- ----------------------------------------------------------------------------------
+-- FUNCTION: fn_days_until_due
+-- Given a loan_id, returns days remaining until due.
+-- Positive = days left, 0 = due today, negative = overdue by N days.
+-- IN  p_loan_id INT - the loan to check
+-- RETURNS INT
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE FUNCTION fn_days_until_due (p_loan_id INT)
+RETURNS INT
+DETERMINISTIC
+READS SQL DATA
+BEGIN
+    DECLARE v_end_date  DATE;
+    SELECT loan_end_date INTO v_end_date FROM loans WHERE loan_id = p_loan_id LIMIT 1;
+    RETURN DATEDIFF(v_end_date, CURDATE());
+END$$
+DELIMITER ;
+
+-- Demonstration: check days remaining across all active loans
+SELECT
+    l.loan_id,
+    CONCAT(u.user_first_name, ' ', u.user_last_name) AS patron,
+    b.book_title,
+    fn_days_until_due(l.loan_id) AS days_until_due
+FROM loans l
+JOIN users u ON l.user_id = u.user_id
+JOIN books b ON l.book_id = b.book_id
+WHERE l.loan_return_date IS NULL
+ORDER BY days_until_due ASC;
