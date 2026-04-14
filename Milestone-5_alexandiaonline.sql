@@ -184,34 +184,60 @@ INSERT INTO authors_genres VALUES (1,2,1),(2,1,2),(3,3,5),(4,4,3),(5,5,6),(6,6,1
 
 
 -- ==================================================================================
--- PART 2: 	Write Queries to Demonstrate Database Functionality			(name)
+-- PART 2:     Write Queries to Demonstrate Database Functionality            Owen Flatman
 -- ==================================================================================
 
-/*------------------------------------------------------
-  1. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
 
 
-/*------------------------------------------------------
-  2. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
-
-
-/*------------------------------------------------------
-  3. 
-  ------------------------------------------------------
-  describe step here
---------------------------------------------------------*/
-
-
-
-
+-- This query shows how many books each user has borrowed.
+SELECT 
+    u.user_first_name,
+    u.user_last_name,
+    COUNT(l.loan_id) AS total_loans
+FROM users u
+JOIN loans l ON u.user_id = l.user_id
+GROUP BY u.user_id
+ORDER BY total_loans DESC;
+-- This query shows how many times each book has been borrowed.
+SELECT 
+    b.book_title,
+    COUNT(l.loan_id) AS times_borrowed
+FROM books b
+JOIN loans l ON b.book_id = l.book_id
+GROUP BY b.book_id
+ORDER BY times_borrowed DESC;
+-- This query finds the average balance of all users.
+SELECT AVG(user_balance) AS avg_balance
+FROM users;
+-- This query finds the user with the highest balance.
+SELECT *
+FROM users
+WHERE user_balance = (SELECT MAX(user_balance) FROM users);
+-- This query combines first and last names to show full user names.
+SELECT *
+FROM users
+WHERE user_balance = (SELECT MAX(user_balance) FROM users);
+-- This query lists all unique genres in the database.
+SELECT DISTINCT genre_name
+FROM genres;
+-- This query shows each book along with its shelf location.
+SELECT 
+    b.book_title,
+    s.shelf_location_description
+FROM books b
+JOIN shelves s ON b.shelf_id = s.shelf_id
+ORDER BY b.book_title;
+-- This query finds books that are overdue and not yet returned.
+SELECT 
+    b.book_title,
+    u.user_first_name,
+    u.user_last_name,
+    l.loan_end_date
+FROM loans l
+JOIN books b ON l.book_id = b.book_id
+JOIN users u ON l.user_id = u.user_id
+WHERE l.loan_return_date IS NULL
+AND l.loan_end_date < CURDATE()
 
 
 -- ==================================================================================
