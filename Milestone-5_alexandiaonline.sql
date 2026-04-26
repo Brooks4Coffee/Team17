@@ -162,12 +162,12 @@ INSERT INTO loans VALUES (1,1,1,'2026-01-04','2026-04-04','2026-03-24'),(2,2,2,'
 -- Additional varied loans
 
 INSERT INTO loans VALUES
--- User borrowing multiple books
+-- One user borrowing multiple books
 (16,1,10,'2026-02-10','2026-03-10','2026-03-05'),
-(17,1,15,'2026-03-15','2026-04-15',NULL), -- active
+(17,1,15,'2026-03-15','2026-04-15',NULL),
 
--- Same book borrowed by different users (popular book)
-(18,5,10,'2026-01-01','2026-02-01','2026-02-05'), -- overdue
+-- Same book borrowed multiple times
+(18,5,10,'2026-01-01','2026-02-01','2026-02-05'),
 (19,8,10,'2026-02-20','2026-03-20','2026-03-18'),
 
 -- Overdue loan
@@ -176,19 +176,19 @@ INSERT INTO loans VALUES
 -- Early return
 (21,3,12,'2026-02-01','2026-03-01','2026-02-05'),
 
--- Active loans (NULL return date)
+-- Active loans
 (22,4,20,'2026-04-01','2026-05-01',NULL),
 (23,6,25,'2026-04-10','2026-05-10',NULL),
 
--- Older historical data
+-- Older data
 (24,7,3,'2025-06-01','2025-07-01','2025-06-20'),
 (25,9,18,'2024-11-15','2024-12-15','2024-12-10'),
 
--- Same user multiple times (power user)
+-- Same user multiple times
 (26,1,22,'2026-01-01','2026-02-01','2026-01-20'),
 (27,1,30,'2026-02-01','2026-03-01','2026-02-25'),
 
--- Same-day return edge case
+-- Same day return
 (28,10,8,'2026-03-01','2026-03-10','2026-03-01'),
 
 -- Very late return
