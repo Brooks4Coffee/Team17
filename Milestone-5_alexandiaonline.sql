@@ -41,7 +41,7 @@ CREATE TABLE books(
 	book_id INT PRIMARY KEY,
     book_title VARCHAR(100) NOT NULL,
     book_published_date DATE,
-    book_isbn DOUBLE UNIQUE,
+    book_isbn VARCHAR(20) UNIQUE,
     
     shelf_id INT,
     FOREIGN KEY (shelf_id) REFERENCES shelves(shelf_id)
@@ -71,16 +71,13 @@ CREATE TABLE authors (
 );
 
 CREATE TABLE loans (
-	loan_id INT PRIMARY KEY,    
+    loan_id INT PRIMARY KEY,    
     
     user_id INT, 
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     
-    book_id INT, 
-    FOREIGN KEY (book_id) REFERENCES books(book_id),
-    
-	loan_checkout_date DATE,
-    loan_end_date DATE NOT NULL,
+    loan_checkout_date DATE,
+    loan_due_date DATE NOT NULL,
     loan_return_date DATE
 );
 
@@ -110,6 +107,16 @@ CREATE TABLE genres (
       Books having multiple Authors
 
 ------------------------------------------------------ */
+
+CREATE TABLE loan_items (
+    loan_id INT,
+    book_id INT,
+    
+    PRIMARY KEY (loan_id, book_id),
+    
+    FOREIGN KEY (loan_id) REFERENCES loans(loan_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id)
+);
 
 CREATE TABLE authors_books (
 	authors_books INT PRIMARY KEY,    
@@ -158,41 +165,60 @@ INSERT INTO shelves VALUES (1,'on the second floor and first from the stairs'),(
 INSERT INTO books VALUES (1,'The Martian','2011-02-11','9780804139021',1),(2,'Project Hail Mary','2021-05-04','9780593135204',1),(3,'The Hobbit','1937-09-21','9780345339683',2),(4,'The Fellowship of the Ring','1954-07-29','9780261103573',2),(5,'Pride and Prejudice','1813-01-28','9780141439518',3),(6,'Emma','1815-12-23','9780141439587',3),(7,'The Great Gatsby','1925-04-10','9780743273565',4),(8,'Tender Is the Night','1934-04-12','9780684801544',4),(9,'1984','1949-06-08','9780451524935',5),(10,'Animal Farm','1945-08-17','9780451526342',5),(11,'To Kill a Mockingbird','1960-07-11','9780061120084',6),(12,'Go Set a Watchman','2015-07-14','9780062409850',6),(13,'The Shining','1977-01-28','9780307743657',7),(14,'It','1986-09-15','9780450411434',7),(15,'Murder on the Orient Express','1934-01-01','9780062073501',8),(16,'And Then There Were None','1939-11-06','9780062073488',8),(17,'Foundation','1951-05-01','9780553293357',9),(18,'I Robot','1950-12-02','9780553382563',9),(19,'2001 A Space Odyssey','1968-07-01','9780451457998',10),(20,'Rendezvous with Rama','1973-06-01','9780575077331',10),(21,'Dune','1965-08-01','9780441172719',11),(22,'Dune Messiah','1969-10-15','9780441172696',11),(23,'American Gods','2001-06-19','9780062572233',12),(24,'Neverwhere','1996-09-16','9780380789016',12),(25,'Good Omens','1990-05-01','9780060853983',13),(26,'Small Gods','1992-05-01','9780062237378',13),(27,'The Hunger Games','2008-09-14','9780439023528',14),(28,'Catching Fire','2009-09-01','9780439023498',14),(29,'The Fault in Our Stars','2012-01-10','9780525478812',15),(30,'Looking for Alaska','2005-03-03','9780525475064',15),(31,'The Da Vinci Code','2003-04-03','9780307474278',16),(32,'Angels and Demons','2000-05-01','9781416524793',16),(33,'The Alchemist','1988-04-15','9780061122415',17),(34,'Brida','1990-01-01','9780061762703',17),(35,'Life of Pi','2001-09-11','9780156027328',18),(36,'Beatrice and Virgil','2010-02-02','9780385660068',18),(37,'The Road','2006-09-26','9780307387899',19),(38,'No Country for Old Men','2005-07-19','9780307387134',19),(39,'Gone Girl','2012-06-05','9780307588371',20),(40,'Sharp Objects','2006-09-26','9780307341556',20),(41,'The Girl with the Dragon Tattoo','2005-08-01','9780307454546',21),(42,'The Girl Who Played with Fire','2006-05-01','9780307454553',21),(43,'The Name of the Wind','2007-03-27','9780756404741',22),(44,'The Wise Man Fear','2011-03-01','9780756404734',22),(45,'Ready Player One','2011-08-16','9780307887443',23),(46,'Ready Player Two','2020-11-24','9781524761332',23),(47,'The Silent Patient','2019-02-05','9781250301697',24),(48,'The Maidens','2021-06-10','9781250304452',24);
 INSERT INTO users VALUES (1,'Sean','Meegan','sean.meegan@gmail.com','210-123-4567','2026-04-07',3.67),(2,'Aubrey','Brooks','aubrey.brooks@gmail.com','210-234-5678','2026-04-08',6.21),(3,'Owen','Flatmen','owen.flatmen@gmail.com','210-345-6789','2026-04-06',0.01),(4,'Isi','Ataghauman','isi.ataghauman@gmail.com','210-456-7890','2026-04-04',9.99),(5,'Loren','Dunston','ldunston4@intel.com','413-897-0726','2025-05-15',8.93),(6,'Berta','Ney','bney5@mail.ru','187-413-5283','2026-02-21',9.62),(7,'Salim','Bagnal','sbagnal6@accuweather.com','615-893-2311','2025-07-11',5.76),(8,'Jennine','Wateridge','jwateridge7@cbc.ca','850-943-4179','2025-09-28',5.30),(9,'Abelard','Cowap','acowap8@woothemes.com','922-493-0682','2025-10-31',6.82),(10,'Laurella','Antusch','lantusch9@vk.com','449-676-7554','2025-09-17',7.27),(11,'Wallis','Siggin','wsiggina@tuttocitta.it','858-551-9144','2025-08-17',6.46),(12,'Zedekiah','Stiff','zstiffb@instagram.com','303-887-2594','2025-10-18',9.22),(13,'Meade','Wilse','mwilsec@pinterest.com','846-711-5184','2025-08-09',5.99),(14,'Charita','Balma','cbalmad@unblog.fr','595-543-6299','2025-04-11',3.94),(15,'Lyn','Ferreri','lferrerie@seattletimes.com','953-637-9413','2026-01-14',6.50),(16,'Nealon','Faulkner','nfaulknerf@ameblo.jp','919-646-2814','2025-04-30',6.43),(17,'Kassia','Edsell','kedsellg@nytimes.com','459-430-4833','2026-02-10',9.44),(18,'Othella','Hawthorn','ohawthornh@people.com.cn','164-389-3904','2025-09-14',6.91),(19,'Bellanca','Mountstephen','bmountstepheni@shareasale.com','890-581-7547','2026-01-13',4.03),(20,'Anstice','Pye','apyej@mysql.com','938-758-7950','2025-06-29',4.93),(21,'Madison','Aarons','maaronsk@mac.com','282-487-2628','2026-03-11',5.46),(22,'Elset','Dungee','edungeel@abc.net.au','303-189-4256','2025-12-07',4.33),(23,'Lyndy','McCaffrey','lmccaffreym@craigslist.org','433-324-2537','2026-02-23',9.24),(24,'Christabel','Benion','cbenionn@who.int','949-408-6307','2025-09-30',4.44),(25,'Doll','Poag','dpoago@usgs.gov','626-328-7597','2025-09-24',5.50),(26,'Bonny','Olenov','bolenovp@ask.com','367-111-7683','2025-10-16',2.06),(27,'Frans','Landre','flandreq@icq.com','119-132-0737','2025-07-19',7.44),(28,'Tilly','Ablott','tablottr@umn.edu','951-773-7828','2025-12-19',2.89),(29,'Bamby','Bygott','bbygotts@nymag.com','430-749-4672','2025-10-04',9.57),(30,'Yvon','Kent','ykentt@elegantthemes.com','249-881-2919','2025-11-09',4.38);
 INSERT INTO genres VALUES (1,'Fantasy','Stories in medievel settings with magic.'),(2,'Science Fiction','Books that contain advanced technologies and real science.'),(3,'Mystery','Detective stories.'),(4,'Horror','Scary and intense stories.'),(5,'Romance','Love stories.'),(6,'Thriller','Fast paced suspense stories'),(7,'Adventure','Exploration and action stories'),(8,'Biography','Stories about real people'),(9,'Historical Fiction','Stories set in historical periods'),(10,'Young Adult','Books aimed at teenage readers'),(11,'Drama','Emotionally driven storytelling'),(12,'Crime','Stories involving criminal investigations'),(13,'Poetry','Collections of poems'),(14,'Philosophy','Books discussing philosophical ideas'),(15,'Self Help','Books about personal improvement'),(16,'Travel','Books about places and journeys'),(17,'Education','Academic or instructional books'),(18,'Technology','Books about computers and tech'),(19,'Politics','Books about political systems'),(20,'Religion','Books about religious beliefs'),(21,'Mythology','Stories of ancient myths'),(22,'Classic Literature','Famous works of literature'),(23,'Satire','Humorous criticism of society'),(24,'Short Stories','Collections of short narratives');
-INSERT INTO loans VALUES (1,1,1,'2026-01-04','2026-04-04','2026-03-24'),(2,2,2,'2026-01-11','2026-03-08','2026-01-05'),(3,3,3,'2026-01-24','2026-04-04','2026-03-21'),(4,4,4,'2026-02-26','2026-03-20','2026-03-29'),(5,5,5,'2026-01-07','2026-03-20','2026-01-12'),(6,6,6,'2026-01-05','2026-03-07','2026-02-20'),(7,7,7,'2026-02-12','2026-03-08','2026-02-26'),(8,8,8,'2026-02-15','2026-03-25','2026-01-08'),(9,9,9,'2026-01-14','2026-03-04','2026-03-06'),(10,10,10,'2026-02-04','2026-04-03','2026-01-20'),(11,11,11,'2026-01-16','2026-03-28','2026-03-18'),(12,12,12,'2026-01-21','2026-03-22','2026-03-15'),(13,13,13,'2026-02-16','2026-03-01','2026-03-19'),(14,14,14,'2026-01-18','2026-03-04','2026-01-15');
--- Additional varied loans
+INSERT INTO loans VALUES (1,1,'2026-01-04','2026-04-04','2026-03-24'),(2,2,'2026-01-11','2026-03-08','2026-01-05'),(3,3,'2026-01-24','2026-04-04','2026-03-21'),(4,4,'2026-02-26','2026-03-20','2026-03-29'),(5,5,'2026-01-07','2026-03-20','2026-01-12'),(6,6,'2026-01-05','2026-03-07','2026-02-20'),(7,7,'2026-02-12','2026-03-08','2026-02-26'),(8,8,'2026-02-15','2026-03-25','2026-01-08'),(9,9,'2026-01-14','2026-03-04','2026-03-06'),(10,10,'2026-02-04','2026-04-03','2026-01-20'),(11,11,'2026-01-16','2026-03-28','2026-03-18'),(12,12,'2026-01-21','2026-03-22','2026-03-15'),(13,13,'2026-02-16','2026-03-01','2026-03-19'),(14,14,'2026-01-18','2026-03-04','2026-01-15');
 
 INSERT INTO loans VALUES
--- One user borrowing multiple books
-(16,1,10,'2026-02-10','2026-03-10','2026-03-05'),
-(17,1,15,'2026-03-15','2026-04-15',NULL),
+(16,1,'2026-02-10','2026-03-10','2026-03-05'),
+(17,1,'2026-03-15','2026-04-15',NULL),
+(18,5,'2026-01-01','2026-02-01','2026-02-05'),
+(19,8,'2026-02-20','2026-03-20','2026-03-18'),
+(20,2,'2026-01-10','2026-02-10','2026-03-01'),
+(21,3,'2026-02-01','2026-03-01','2026-02-05'),
+(22,4,'2026-04-01','2026-05-01',NULL),
+(23,6,'2026-04-10','2026-05-10',NULL),
+(24,7,'2025-06-01','2025-07-01','2025-06-20'),
+(25,9,'2024-11-15','2024-12-15','2024-12-10'),
+(26,1,'2026-01-01','2026-02-01','2026-01-20'),
+(27,1,'2026-02-01','2026-03-01','2026-02-25'),
+(28,10,'2026-03-01','2026-03-10','2026-03-01'),
+(29,11,'2026-01-01','2026-02-01','2026-04-01'),
+(32, 3, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 10 DAY), NULL),
+(33, 4, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 5 DAY), NULL),
+(34, 5, CURDATE(), CURDATE(), NULL),
+(35, 6, DATE_SUB(CURDATE(), INTERVAL 10 DAY), DATE_SUB(CURDATE(), INTERVAL 2 DAY), NULL),
+(36, 7, DATE_SUB(CURDATE(), INTERVAL 30 DAY), DATE_SUB(CURDATE(), INTERVAL 15 DAY), NULL),
+(37, 8, DATE_SUB(CURDATE(), INTERVAL 20 DAY), DATE_SUB(CURDATE(), INTERVAL 10 DAY), DATE_SUB(CURDATE(), INTERVAL 2 DAY)),
+(38, 9, DATE_SUB(CURDATE(), INTERVAL 10 DAY), DATE_ADD(CURDATE(), INTERVAL 5 DAY), CURDATE()),
+(39, 1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY), NULL),
+(40, 1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY), NULL),
+(41, 10, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 90 DAY), NULL),
+(42, 11, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 1 DAY), NULL),
+(43,12,'2026-04-01','2026-05-01',NULL),
+(44,13,'2026-04-03','2026-05-03',NULL),
+(45,14,'2026-03-01','2026-03-25',NULL),
+(46,15,'2026-04-05','2026-05-05',NULL),
+(47,16,'2026-02-15','2026-03-15','2026-03-20'),
+(48,17,'2026-04-07','2026-05-07',NULL),
+(49,18,'2026-01-20','2026-02-20','2026-02-10'),
+(50,19,'2026-03-10','2026-04-10',NULL),
+(51,20,'2026-04-12','2026-05-12',NULL),
+(52,21,'2026-02-01','2026-03-01',NULL),
+(53,22,'2026-04-15','2026-05-15',NULL),
+(54,23,'2026-03-20','2026-04-20',NULL),
+(55,24,'2026-04-18','2026-05-18',NULL),
+(56,25,'2026-01-15','2026-02-15',NULL),
+(57,26,'2026-04-20','2026-05-20',NULL),
+(58,27,'2026-03-05','2026-04-05','2026-04-01'),
+(59,28,'2026-04-22','2026-05-22',NULL),
+(60,29,'2026-02-10','2026-03-10',NULL),
+(61,30,'2026-04-25','2026-05-25',NULL),
+(62,12,'2026-03-01','2026-04-01','2026-03-28'),
+(63,15,'2026-04-10','2026-05-10',NULL),
+(64,18,'2026-04-11','2026-05-11',NULL),
+(65,21,'2026-04-01','2026-04-27',NULL),
+(66,25,'2026-04-03','2026-05-03',NULL),
+(67,30,'2026-03-15','2026-04-15',NULL);
 
--- Same book borrowed multiple times
-(18,5,10,'2026-01-01','2026-02-01','2026-02-05'),
-(19,8,10,'2026-02-20','2026-03-20','2026-03-18'),
-
--- Overdue loan
-(20,2,7,'2026-01-10','2026-02-10','2026-03-01'),
-
--- Early return
-(21,3,12,'2026-02-01','2026-03-01','2026-02-05'),
-
--- Active loans
-(22,4,20,'2026-04-01','2026-05-01',NULL),
-(23,6,25,'2026-04-10','2026-05-10',NULL),
-
--- Older data
-(24,7,3,'2025-06-01','2025-07-01','2025-06-20'),
-(25,9,18,'2024-11-15','2024-12-15','2024-12-10'),
-
--- Same user multiple times
-(26,1,22,'2026-01-01','2026-02-01','2026-01-20'),
-(27,1,30,'2026-02-01','2026-03-01','2026-02-25'),
-
--- Same day return
-(28,10,8,'2026-03-01','2026-03-10','2026-03-01'),
-
--- Very late return
-(29,11,14,'2026-01-01','2026-02-01','2026-04-01');
  /*------------------------------------------------------
   2.
   ------------------------------------------------------
@@ -206,7 +232,10 @@ INSERT INTO loans VALUES
   
  */
 
-	
+INSERT INTO loan_items  VALUES (1, 1),(1, 2),(1, 3),(2, 10),(2, 11),(3, 5),(3, 6),(3, 7),(3, 8),(14, 2),(14, 5),(14, 10),(16, 12),(16, 13),(17, 4),(17, 15),(18, 5),
+(19, 5),(19, 16),(20, 20),(21, 21),(22, 22),(22, 23),(23, 24),(24, 25),(25, 26),(26, 27),(27, 28),(28, 29),(29, 30),(32, 33),(33, 34),(34, 35),
+(36, 37),(38, 39),(39, 40),(39, 41),(40, 42),(41, 43),(41, 44),(42, 45),(43,1),(44,2),(45,3),(46,4),(47,5),(48,6),(49,7),(51,9),(53,11),(54,12),(55,13),(56,14),
+(57,15),(58,16),(59,17),(60,18),(61,19),(62,20),(63,21),(64,22),(65,23),(66,24),(67,25),(43,26),(46,27),(52,28),(56,29),(61,30);
 
 INSERT INTO authors_books VALUES (1,1,1),(2,1,2),(3,2,3),(4,2,4),(5,3,5),(6,3,6),(7,4,7),(8,4,8),(9,5,9),(10,5,10),(11,6,11),(12,6,12),(13,7,13),(14,7,14),(15,8,15),(16,8,16),(17,9,17),(18,9,18),(19,10,19),(20,10,20),(21,11,21),(22,11,22),(23,12,23),(24,12,24),(25,13,25),(26,13,26),(27,14,27),(28,14,28),(29,15,29),(30,15,30),(31,16,31),(32,16,32),(33,17,33),(34,17,34),(35,18,35),(36,18,36),(37,19,37),(38,19,38),(39,20,39),(40,20,40),(41,21,41),(42,21,42),(43,22,43),(44,22,44),(45,23,45),(46,23,46),(47,24,47),(48,24,48);
 
@@ -215,62 +244,211 @@ INSERT INTO books_genres VALUES (1,1,2),(2,2,2),(3,3,1),(4,4,1),(5,5,5),(6,6,5),
 INSERT INTO authors_genres VALUES (1,2,1),(2,1,2),(3,3,5),(4,4,3),(5,5,6),(6,6,11),(7,7,4),(8,8,3),(9,9,2),(10,10,2),(11,11,1),(12,12,1),(13,13,23),(14,14,10),(15,15,10),(16,16,6),(17,17,14),(18,18,7),(19,19,6),(20,20,6),(21,21,3),(22,22,1),(23,23,2),(24,24,6);
 
 
--- ==================================================================================
--- PART 2: 	Write Queries to Demonstrate Database Functionality			(name)
--- ==================================================================================
+-- This query shows how many books each user has borrowed.
+SELECT 
+    u.user_first_name,
+    u.user_last_name,
+    COUNT(l.loan_id) AS total_loans
+FROM users u
+JOIN loans l ON u.user_id = l.user_id
+GROUP BY u.user_id
+ORDER BY total_loans DESC;
+-- This query shows how many times each book has been borrowed.
+SELECT 
 
-/*------------------------------------------------------
-  1. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
-
-
-/*------------------------------------------------------
-  2. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
-
-
-/*------------------------------------------------------
-  3. 
-  ------------------------------------------------------
-  describe step here
---------------------------------------------------------*/
-
-
-
-
-
-
--- ==================================================================================
--- PART 4: 									(name)
--- ==================================================================================
-
-/*------------------------------------------------------
-  1. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
-
-
-/*------------------------------------------------------
-  2. 
-  ------------------------------------------------------
-  describe step here
-  
---------------------------------------------------------*/
-
-
-/*------------------------------------------------------
-  3. 
-  ------------------------------------------------------
-  describe step here
---------------------------------------------------------*/
+    b.book_title,
+    COUNT(l.loan_id) AS times_borrowed
+FROM books b
+JOIN loan_items l ON b.book_id = l.book_id
+GROUP BY b.book_id
+ORDER BY times_borrowed DESC;
+-- This query finds the average balance of all users.
+SELECT AVG(user_balance) AS avg_balance
+FROM users;
+-- This query finds the user with the highest balance.
+SELECT *
+FROM users
+WHERE user_balance = (SELECT MAX(user_balance) FROM users);
+-- This query combines first and last names to show full user names.
+SELECT 
+    CONCAT(user_first_name, ' ', user_last_name) AS full_name
+FROM users;
+-- This query lists all unique genres in the database.
+SELECT DISTINCT genre_name
+FROM genres;
+-- This query shows each book along with its shelf location.
+SELECT 
+    b.book_title,
+    s.shelf_location_description
+FROM books b
+JOIN shelves s ON b.shelf_id = s.shelf_id
+ORDER BY b.book_title;
+-- This query finds books that are overdue and not yet returned.
+SELECT 
+    b.book_title,
+    u.user_first_name,
+    u.user_last_name,
+    l.loan_due_date
+FROM loans l
+JOIN loan_items li ON l.loan_id = li.loan_id
+JOIN books b ON li.book_id = b.book_id
+JOIN users u ON l.user_id = u.user_id
+WHERE l.loan_return_date IS NULL
+AND l.loan_due_date < CURDATE();
 
 
+CREATE TABLE IF NOT EXISTS loan_audit_log (
+    log_id          INT PRIMARY KEY AUTO_INCREMENT,
+    event_type      VARCHAR(10),
+    loan_id         INT,
+    user_id         INT,
+    notes           VARCHAR(255),
+    event_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
+
+-- ----------------------------------------------------------------------------------
+-- TRIGGER 1 - INSERT
+-- Fires after a new loan is created. Logs the new checkout to loan_audit_log.
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE TRIGGER after_loan_insert
+AFTER INSERT ON loans
+FOR EACH ROW
+BEGIN
+    INSERT INTO loan_audit_log (event_type, loan_id, user_id, notes)
+    VALUES ('INSERT', NEW.loan_id, NEW.user_id,
+            CONCAT('New loan created. Due: ', NEW.loan_due_date));
+END$$
+DELIMITER ;
+
+-- Demonstration: insert a loan and check the log
+INSERT INTO loans (loan_id, user_id, loan_checkout_date, loan_due_date, loan_return_date)
+VALUES (31, 1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NULL);
+SELECT * FROM loan_audit_log WHERE event_type = 'INSERT';
+
+
+-- ----------------------------------------------------------------------------------
+-- TRIGGER 2 - UPDATE
+-- Fires after a loan's due date is changed. Logs the old and new due date.
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE TRIGGER after_loan_due_date_update
+AFTER UPDATE ON loans
+FOR EACH ROW
+BEGIN
+    IF OLD.loan_due_date <> NEW.loan_due_date THEN
+        INSERT INTO loan_audit_log (
+            event_type,
+            loan_id,
+            user_id,
+            notes
+        )
+        VALUES (
+            'UPDATE',
+            NEW.loan_id,
+            NEW.user_id,
+            CONCAT(
+                'Due date changed from ',
+                OLD.loan_due_date,
+                ' to ',
+                NEW.loan_due_date
+            )
+        );
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Demonstration: extend due date by 14 days and check the log
+UPDATE loans SET loan_due_date = DATE_ADD(loan_due_date, INTERVAL 14 DAY) WHERE loan_id = 31;
+SELECT * FROM loan_audit_log WHERE event_type = 'UPDATE';
+
+
+-- ----------------------------------------------------------------------------------
+-- TRIGGER 3 - DELETE
+-- Fires before a loan is deleted. Archives the record so it is never silently lost.
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE TRIGGER before_loan_delete
+BEFORE DELETE ON loans
+FOR EACH ROW
+BEGIN
+    INSERT INTO loan_audit_log (event_type, loan_id, user_id, notes)
+    VALUES ('DELETE', OLD.loan_id, OLD.user_id,
+            CONCAT('Loan deleted. Originally checked out: ', OLD.loan_checkout_date));
+END$$
+DELIMITER ;
+
+-- Demonstration: delete the loan and confirm it was archived
+DELETE FROM loans WHERE loan_id = 31;
+SELECT * FROM loan_audit_log WHERE loan_id = 31;
+
+
+-- ----------------------------------------------------------------------------------
+-- STORED PROCEDURE: get_overdue_loans_for_user
+-- Given a user_id, returns all overdue loans and how many days overdue each one is.
+-- IN  p_user_id INT - the user to check
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+CREATE PROCEDURE get_overdue_loans_for_user (IN p_user_id INT)
+BEGIN
+    SELECT
+        CONCAT(u.user_first_name, ' ', u.user_last_name) AS user_full_name,
+        b.book_title,
+        l.loan_due_date,
+        DATEDIFF(CURDATE(), l.loan_due_date) AS days_overdue
+    FROM loans l
+    JOIN loan_items li ON l.loan_id = li.loan_id
+    JOIN books b ON li.book_id = b.book_id
+    JOIN users u ON l.user_id = u.user_id
+    WHERE l.user_id = p_user_id
+      AND l.loan_return_date IS NULL
+      AND l.loan_due_date < CURDATE()
+    ORDER BY days_overdue DESC;
+END$$
+DELIMITER ;
+
+-- Demonstration: check overdue loans for user 6 and 7
+CALL get_overdue_loans_for_user(6);
+CALL get_overdue_loans_for_user(7);
+
+-- ----------------------------------------------------------------------------------
+-- FUNCTION: fn_days_until_due
+-- Given a loan_id, returns days remaining until due.
+-- Positive = days left, 0 = due today, negative = overdue by N days.
+-- IN  p_loan_id INT - the loan to check
+-- RETURNS INT
+-- ----------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE FUNCTION fn_days_until_due(p_loan_id INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE v_due_date DATE;
+
+    SELECT loan_due_date
+    INTO v_due_date
+    FROM loans
+    WHERE loan_id = p_loan_id
+    LIMIT 1;
+
+    RETURN DATEDIFF(v_due_date, CURDATE());
+END$$
+
+DELIMITER ;
+
+-- Demonstration: check days remaining across all active loans
+SELECT
+    l.loan_id,
+    CONCAT(u.user_first_name, ' ', u.user_last_name) AS patron,
+    b.book_title,
+    fn_days_until_due(l.loan_id) AS days_until_due
+FROM loans l
+JOIN loan_items li ON l.loan_id = li.loan_id
+JOIN books b ON li.book_id = b.book_id
+JOIN users u ON l.user_id = u.user_id
+WHERE l.loan_return_date IS NULL
+ORDER BY days_until_due ASC;
